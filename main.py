@@ -6,4 +6,5 @@ if '__ipython__':
 from src.funcs import *
 
 if __name__ == '__main__':
-    AAPL = scrapeHistory('AAPL')
+    AAPL = scrape_history('AAPL')
+    AAPL = prices_to_returns(AAPL)
