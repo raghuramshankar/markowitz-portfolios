@@ -9,31 +9,6 @@ import statsmodels.api as sm
 from numpy.linalg import inv
 from scipy.optimize import minimize
 
-
-def scrape_history(ticker, period='1mo', start=pd.to_datetime("1980-01-01"), end=pd.to_datetime('today')):
-    '''
-    Gets stock historical data from Yahoo Finance
-    '''
-
-    period1 = int(time.mktime(datetime.datetime(start.year, start.month, start.day, 23, 59).timetuple()))
-    period2 = int(time.mktime(datetime.datetime(end.year, end.month, end.day, 23, 59).timetuple()))
-    interval = period # 1d, 1wk, 1mo
-
-    query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={period1}&period2={period2}&interval={interval}&events=history&includeAdjustedClose=true'
-
-    df = pd.read_csv(query_string)
-    df.index = pd.to_datetime(df['Date'])
-
-    return df
-
-def prices_to_returns(df):
-    '''
-    Converts stock prices to returns
-    '''
-    df['Close'] = (df['Close'].pct_change())
-    df = df.get(['Close'])[1:]
-    return df
-
 def terminal_wealth(s):
     '''
     Computes the terminal wealth of a sequence of return, which is, in other words, 
@@ -55,18 +30,6 @@ def compound_returns(s, start=100):
         return s.aggregate( compound_returns, start=start )
     elif isinstance(s, pd.Series):
         return start * (1 + s).cumprod()
-    else:
-        raise TypeError("Expected pd.DataFrame or pd.Series")
-        
-def compute_returns(s):
-    '''
-    Computes the returns (percentage change) of a Dataframe of Series. 
-    In the former case, it computes the returns for every column (Series) by using pd.aggregate
-    '''
-    if isinstance(s, pd.DataFrame):
-        return s.aggregate( compute_returns )
-    elif isinstance(s, pd.Series):
-        return s / s.shift(1) - 1
     else:
         raise TypeError("Expected pd.DataFrame or pd.Series")
     

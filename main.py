@@ -1,10 +1,13 @@
 # %%
+from src.yahoo_finance import *
 if '__ipython__':
     %matplotlib widget
     %load_ext autoreload
     %autoreload 2
-from src.funcs import *
 
 if __name__ == '__main__':
-    AAPL = scrape_history('AAPL')
-    AAPL = prices_to_returns(AAPL)
+    tickers = 'AAPL TSLA ^GSPC'
+    df = get_df(tickers)
+    df = monthly_returns(df)
+    results = build_capm(df['AAPL'], df['^GSPC'], plot=True)
+    print(results.summary())
