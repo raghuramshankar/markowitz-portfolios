@@ -1,7 +1,9 @@
 # Portfolio Constructor
-Stock and ETF portfolio construction using financial optimization
+- Stock and ETF portfolio construction using financial optimization
+- Not investment advice, use at your own risk
 
-## Not investment advice, use at your own risk
+## Notebooks:
+- Capital Market Price Model: [capm](capm.ipynb)
 
 # Credits:
 - Scrape from Yahoo Finance: [Link](https://learndataanalysis.org/source-code-download-historical-stock-data-from-yahoo-finance-using-python/)
