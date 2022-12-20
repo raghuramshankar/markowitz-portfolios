@@ -36,7 +36,7 @@ def monthly_returns(df):
     df = df.resample('M').ffill().pct_change().dropna(axis=0)
     return df
 
-def build_capm(asset, market, plot=False):
+def build_capm(asset, market, risk_free=pd.Series([]), plot=False):
     '''
     builds the CAPM regression model for the input tickers from the start to end date
     inputs:
@@ -49,7 +49,13 @@ def build_capm(asset, market, plot=False):
     start = max(asset.index[0], market.index[0])
     asset = asset[start:]
     market = market[start:]
-    df = pd.DataFrame({asset.name: asset, market.name: market})
+
+    # subtract risk free rate
+    if risk_free.any():
+        risk_free = risk_free[start:]
+        asset[0:] = asset[0:] - risk_free[0:]
+        market[0:] = market[0:] - risk_free[0:]
+    df_capm = asset.to_frame().join(market.to_frame())
 
     # add bias term to x axis
     x_sm = sm.add_constant(market)
@@ -61,6 +67,6 @@ def build_capm(asset, market, plot=False):
 
     # plot
     if plot:
-        sns.regplot(x=df.columns[1], y=df.columns[0], data=df)
+        sns.regplot(x=df_capm.columns[1], y=df_capm.columns[0], data=df_capm)
 
     return results
